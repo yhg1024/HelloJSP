@@ -1,4 +1,4 @@
-package com.momo;
+package com.momo.dto;
 
 public class Job {
 	private String jobCode;

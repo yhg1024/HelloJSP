@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.momo.dto.Job;
+
 public class DBConnectionSelf {
 	public static void main(String[] args) {
 		String url = "jdbc:oracle:thin:@localhost:1521:ORCL";
