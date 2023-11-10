@@ -48,6 +48,22 @@
 	 <res-auth>Container</res-auth>
   </resource-ref>
   
+   <!-- 한글깨짐 방지를 위한 필터 설정 -->
+   <!-- 필터를 정의 -->
+   <filter>
+	    <filter-name>SetCharacterEncoding</filter-name>
+	    <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+	    <init-param>
+	    	<param-name>encoding</param-name>
+	    	<param-value>utf-8</param-value>
+	    </init-param>
+	</filter>	
+	<!-- 필터를 매핑 -->
+	<filter-mapping>
+	    <filter-name>SetCharacterEncoding</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+  
   <!-- 에러 페이지 -->
   <error-page>
   	<error-code>404</error-code>
@@ -59,7 +75,7 @@
     <session-timeout>20</session-timeout>
   </session-config>
    -->
-  
+    
   <!--
   <servlet>
   	<servlet-name>서블릿 이름</servlet-name>

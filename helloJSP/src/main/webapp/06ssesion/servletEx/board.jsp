@@ -10,10 +10,10 @@
 <title>Insert title here</title>
 </head>
 <body>
+
 <script type="text/javascript">
 	// 화면에서 동적인 처리
 	window.onload=function(){
-		console.log('fsd');
 		let logoutBtn = document.querySelector("#logoutBtn");
 		let loginBtn = document.querySelector("#loginBtn");
 		if(logoutBtn != null) {
@@ -26,11 +26,13 @@
 		if(loginBtn != null) {
 			loginBtn.addEventListener('click', function(){
 			// 로그인페이지로 이동
-			loginForm.action="loginForm.jsp";
+			// 같은 경로에 있는 파일을 호출했기 때문에 오류가 발생하지 않는다
+			loginForm.action="/06ssesion/servletEx/loginForm.jsp";
 			loginForm.submit();
 				
 			});
 		}
+		
 	}
 
 </script>
@@ -87,7 +89,7 @@
 		
 		<tr>
 			<td><%= dto.getNum()%></td>
-			<td><%= dto.getTitle()%></td>
+			<td><a href="/BoardDetailController?num=<%= dto.getNum() %>"><%= dto.getTitle()%></a></td>
 			<td><%= dto.getContent()%></td>
 			<td><%= dto.getId()%></td>
 			<td><%= dto.getPostdate()%></td>
