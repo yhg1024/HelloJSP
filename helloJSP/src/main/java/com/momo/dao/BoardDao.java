@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.momo.common.DBConnPool;
 import com.momo.dto.BoardDto;
+import com.momo.dto.Criteria;
 
 // DBConnpool
 // : 톰켓에서 제공해주는 기능을 사용하여 커넥션풀이라는 공간에 커넥션 객체를 미리 생성해놓고 사용하는 객체
@@ -81,7 +82,6 @@ public class BoardDao extends DBConnPool{
 				dto.setVisitcount(rs.getString("visitcount"));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return dto;
@@ -91,20 +91,34 @@ public class BoardDao extends DBConnPool{
 	 * 게시글 목록을 반환합니다.
 	 * @return
 	 */
-	public List<BoardDto> getList() {
+	public List<BoardDto> getList(Criteria cri) {
 		List<BoardDto>	list = new ArrayList<>();
 		
 			try {
-				pstmt = con.prepareStatement("select * from board");
+				pstmt = con.prepareStatement("select *\r\n"
+							+ "from (\r\n"
+							+ "    select rownum rnum, b.*\r\n"
+							+ "    from(\r\n"
+							+ "        select rownum, b.*\r\n"
+							+ "            from board b\r\n"
+							+ "        -- 최신순으로 정렬\r\n"
+							+ "        order by num desc\r\n"
+							+ "    )b\r\n"
+							+ ")\r\n"
+							+ "where rnum between ? and ?");
+				
+				pstmt.setInt(1, cri.getStartNum());
+				pstmt.setInt(2, cri.getEndNum());
+				
 				rs = pstmt.executeQuery();
 				
 				while(rs.next()) {
 					BoardDto dto = new BoardDto();
 					dto.setContent(rs.getString("content"));
+					dto.setTitle(rs.getString("title"));
 					dto.setId(rs.getString("id"));
 					dto.setNum(rs.getString("num"));
 					dto.setPostdate(rs.getString("postDate"));
-					dto.setTitle(rs.getString(2));
 					dto.setVisitcount(rs.getString("visitcount"));
 					
 					
@@ -118,8 +132,29 @@ public class BoardDao extends DBConnPool{
 				e.printStackTrace();
 			}
 			
-
-		
 		return list;
+	}
+	
+	/**
+	 * 게시글의 총 건수를 조회후 반환
+	 * - 집계함수를 이용하여 게시글의 총건수를 구해봅시다.
+	 * @return 게시글의 총 건수
+	 */
+	public int getTotalCnt() {
+		int res = 0;
+		String sql = "select count(*) from board";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				res = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return res;		
 	}
 }
